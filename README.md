@@ -1,5 +1,4 @@
 # Defold 2/2.5D top-down template
----
 
 Top-down game template using [rendercam](https://github.com/rgrams/rendercam) and [kenney](https://kenney.nl/assets/medieval-rts).
 
@@ -23,13 +22,11 @@ Top-down game template using [rendercam](https://github.com/rgrams/rendercam) an
 </table>
 
 ## Camera modes
----
 
 To switch the camera view (orthogonal and perspective), enable the desired script on the main scene of the player's game object.
 
 Rotation of objects towards the camera is carried out using a script (enabled only if a perspective camera is used). The launch command is given from the camera's script, the rotation angle is taken from the rotation of the parent game object (player).
 
 ## Sorting objects on the screen
----
 
 Sorting of objects is carried out due to the rotation of the parent object of the camera along the x-axis. In orthogonal mode, it will be enough to set a small value, for example 0.001, or not change it at all. This does not affect the final look of the game.
