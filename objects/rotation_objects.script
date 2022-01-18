@@ -1,0 +1,13 @@
+go.property("objectsCount", 1)
+
+local data = require "main.data"
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("enable_rotation") then
+		self.index_end = self.objectsCount
+		for i = 1, self.index_end do
+			local id = "go" .. i
+			data.set_rotation(id)
+		end
+	end
+end

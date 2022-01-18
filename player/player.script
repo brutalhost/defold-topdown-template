@@ -1,0 +1,75 @@
+go.property("speed", 100)
+
+local data = require "main.data"
+local rendercam = require "rendercam.rendercam"
+
+-- msg.post("@system:", "toggle_physics_debug")
+
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+
+	self.cam_states = {
+		ORT = go.get_id("/camera-ortographic"),
+		PER = go.get_id("/camera-perspective"),
+	}
+	self.cur_cam_state = self.cam_states.ORT
+	
+	self.input = vmath.vector3()
+	self.correction = vmath.vector3()
+end
+
+
+function update(self, dt)
+	local pos = go.get_position(go.get_parent())
+
+	if self.input ~= vmath.vector3() then
+		local new_pos = pos + self.input * self.speed * dt
+		go.set_position(new_pos)
+	end
+
+	self.old_input = self.input
+	self.input = vmath.vector3()
+	self.correction = vmath.vector3()
+end
+
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("contact_point_response") then
+		if message.distance > 0 then
+			local proj = vmath.project(self.correction, message.normal * message.distance)
+			if proj < 1 then
+				local comp = (message.distance - message.distance * proj) * message.normal
+				go.set_position(go.get_position() + comp)
+				self.correction = self.correction + comp
+			end
+		end
+	end
+end
+
+
+function on_input(self, action_id, action)
+	if action_id == hash("up") then
+		self.input.y = 1
+	elseif action_id == hash("down") then
+		self.input.y = -1
+	elseif action_id == hash("left") then
+		self.input.x = -1
+	elseif action_id == hash("right") then
+		self.input.x = 1
+	end
+		
+	if action_id == hash("action") and action.pressed then
+		if self.cur_cam_state == self.cam_states.ORT then
+			rendercam.activate_camera(self.cam_states.PER)
+			self.cur_cam_state = self.cam_states.PER
+		elseif self.cur_cam_state == self.cam_states.PER then
+			rendercam.activate_camera(self.cam_states.ORT)
+			self.cur_cam_state = self.cam_states.ORT
+		end
+	end
+	
+	if vmath.length_sqr(self.input) > 0 then
+		self.input = vmath.normalize(self.input)
+	end
+end
