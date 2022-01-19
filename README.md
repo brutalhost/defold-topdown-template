@@ -1,6 +1,8 @@
-# Defold 2/2.5D top-down template
+# Defold top-down template
 
 Top-down game template using [rendercam](https://github.com/rgrams/rendercam) and [kenney](https://kenney.nl/assets/medieval-rts).
+
+[Browser demo](https://abbdulbinladen.github.io/topdown/)
 
 - [x] Collisions
 - [x] 2/2.5D camera view
